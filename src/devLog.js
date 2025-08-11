@@ -4,7 +4,7 @@ export function log(message) {
     // In a browser environment, you might need to set this variable manually or use a different approach
     
     // Only log messages in development mode
-    const development = true; // Set to true for development, false for production
+    const development = false; // Set to true for development, false for production
     if (development) {
         if (typeof message === 'object') {
             console.log('[Dev Log]');
