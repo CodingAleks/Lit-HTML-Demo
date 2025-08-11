@@ -3,25 +3,22 @@ import { log } from './devLog.js';
 
 log('User Input component initialized');
 
-export function renderTestInputToElement() {
-    log('Rendering user input component');
+function renderLitDemoComponent() {
+    log('Rendering user input');
     const litElement = document.getElementById('lit-output');
-    const innerHtmlElement = document.getElementById('innerHTML-output');
-    const litButton = document.getElementById('lit-button');
-    const innerHtmlButton = document.getElementById('innerHTML-button');
-    litButton.addEventListener('click', renderLit);
-    innerHtmlButton.addEventListener('click', renderInnerHTML);
+    const message = document.getElementById('lit-input').value;
+    const template = (message) => (html`<h1>Hello, ${message}!</h1>`);
+    render(template(message), litElement);
+}
 
-    function renderLit() {
-        const message = document.getElementById('lit-input').value;
-        const template = (message) => (html`<h1>Hello, ${message}!</h1>`);
-        render(template(message), litElement);
-    }
+function renderInnerHtmlComponent() {
+    log('Rendering user input');
 
-    function renderInnerHTML() {
-        const message = document.getElementById('innerHTML-input').value;
-        // If user inputs <button id="btn" onclick="alert('XSS Attack')">Attack</button>
-        // the button will work and the JS will be executed
-        innerHtmlElement.innerHTML = `<h1>Hello, ${message}!</h1>`;
-    }
-};
+    const message = document.getElementById('innerHTML-input').value;
+    // If user inputs:
+    // Winner! You have won $100 <button onclick="alert('You have been Hacked! \nCall Microsoft customer support at +1(888) 633-2934 (Toll Free)')">Claim $100</button>
+    // the button will work and the JS will be executed
+    document.getElementById('innerHTML-output').innerHTML = `<h1>Hello, ${message}!</h1>`;
+}
+
+export { renderLitDemoComponent, renderInnerHtmlComponent }

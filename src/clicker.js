@@ -1,5 +1,6 @@
-import { html, render } from '../node_modules/lit-html/lit-html.js';
+import { html } from '../node_modules/lit-html/lit-html.js';
 import { log } from './devLog.js';
+import { renderMainContent } from './app.js';
 
 log('Clicker component initialized');
 
@@ -7,23 +8,23 @@ let count = 0;
 
 function incrementCount() {
     count++;
-    renderCounterComponent();
+    renderMainContent();
 }
 
-function renderCounterComponent() {
-    render(html`
+function counterComponent() {
+    return html`
         <div class="component" id="counterDiv">
             ${count === 0
-                ? html`
+            ? html`
                     <p>Start clicking the button</p>
                     <button @click=${incrementCount}>Increment</button>
                   `
-                : html`
+            : html`
                     <p>Click counts: ${count}</p>
                     <button @click=${incrementCount}>Increment</button>
                   `}
         </div>
-    `, document.getElementById('clicker'));
+    `;
 }
 
-export { renderCounterComponent };
+export { counterComponent };

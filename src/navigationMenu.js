@@ -4,11 +4,28 @@ import { log } from "./devLog.js";
 log('Navigation component initialized');
 
 const navigationElement = document.getElementById('navigation');
-navigationElement.addEventListener('click', (e) => changePage(e));
+// Let's attach the event listener to the navigation element.
+// We will dispatch a custom event when a page is changed.
+navigationElement.addEventListener('click', (e) => {
+    // Only proceed if the clicked element is a navigation link
+    if (e.target.tagName !== 'P' || e.target.className === 'active') {
+        return;
+    }
+
+    const clickedPage = e.target.textContent;
+
+    // Dispatch a custom event with the new page name
+    navigationElement.dispatchEvent(new CustomEvent('page-changed', {
+        bubbles: true, // Allow the event to bubble up to the document
+        detail: { newPage: clickedPage }
+    }));
+});
+
+// The state is still managed here, but we'll update it based on the event.
 const navigationState = {
     'Home': 'active',
     'Lit-HTML': 'inactive',
-    'innerHTML': 'inactive',
+    'InnerHTML': 'inactive',
     'Names': 'inactive',
     'Counter': 'inactive',
 }
@@ -18,19 +35,13 @@ function renderNavigation() {
     render(html`${Object.keys(navigationState).map(page => html`<p class=${navigationState[page]}>${page}</p>`)}`, navigationElement);
 }
 
-function changePage(e) {
-    if (e.target.className !== 'inactive') {
-        return;
+function setActivePage(page) {
+    if (navigationState[page]) {
+        navigationState[activePage] = 'inactive';
+        activePage = page;
+        navigationState[activePage] = 'active';
+        renderNavigation(); // Re-render the navigation menu
     }
-
-    navigationState[activePage] = 'inactive';
-    document.getElementById(activePage).style.display = 'none';
-    
-    const clickedPage = e.target.textContent;
-    activePage = clickedPage;
-    navigationState[clickedPage] = 'active';
-    renderNavigation();
-    document.getElementById(clickedPage).style.display = 'block';
 }
 
-export { renderNavigation };
+export { renderNavigation, setActivePage };

@@ -1,21 +1,32 @@
 import { render } from '../node_modules/lit-html/lit-html.js';
-import { renderNavigation } from './navigationMenu.js';
-import { renderTestInputToElement } from './renderFromUserInput.js';
-import { renderNamesComponent } from './listOfNames.js';
-import { renderCounterComponent } from './clicker.js';
 import { log } from './devLog.js';
-import { mainContentTemplate } from './MainContent.js'; // Import our new template
+import { counterContent, homeContent, innerHtmlDemoContent, litDemoContent, namesListContent } from './MainContent.js';
+import { renderNavigation, setActivePage } from './navigationMenu.js';
 
-// Get the main container element from index.html
+// A simple router object to map page names to templates
+const router = {
+    'Home': homeContent,
+    'Lit-HTML': litDemoContent,
+    'InnerHTML': innerHtmlDemoContent,
+    'Names': namesListContent,
+    'Counter': counterContent,
+};
+
 const mainContentElement = document.getElementById('main-content');
+let currentPage = 'Home'; // Initial page
 
-// Render the main content template into the main container
-render(mainContentTemplate, mainContentElement);
+export function renderMainContent() {
+    render(router[currentPage](), mainContentElement);
+}
 
-// Now that the elements exist in the DOM, we can run our component logic.
+// Listen for the custom event from the navigation menu
+document.getElementById('navigation').addEventListener('page-changed', (e) => {
+    const newPage = e.detail.newPage;
+    currentPage = newPage;
+    setActivePage(newPage); // Tell the navigation component to update its state
+    renderMainContent(); // Re-render the main content area
+});
+
+// Initial renders
 renderNavigation();
-renderTestInputToElement();
-renderNamesComponent();
-renderCounterComponent();
-
-log('App initialized');
+renderMainContent();
